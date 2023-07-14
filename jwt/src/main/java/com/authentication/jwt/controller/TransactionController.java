@@ -2,6 +2,7 @@ package com.authentication.jwt.controller;
 
 import com.authentication.jwt.models.entities.BankAccount;
 import com.authentication.jwt.service.TransactionService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,18 @@ public class TransactionController {
     @PostMapping("/withdrawal/{amount}/{id}")
     public BankAccount withdrawal(@PathVariable long id, @PathVariable long amount){
         return transactionService.withdrawAmount(id, amount);
+    }
+
+    @GetMapping("/generatePDF")
+    public void generatePDF(HttpServletResponse response){
+        response.setContentType("application/pdf");
+
+        try{
+            transactionService.generateUserListPdf(response);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
 }

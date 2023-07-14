@@ -66,12 +66,12 @@ public class BankAccountController {
         }
     }
 
-    @GetMapping("/pdf")
-    public void generateBankDetails(HttpServletResponse response){
+    @GetMapping("/pdf/{id}")
+    public void generateBankDetails(@PathVariable Long id, HttpServletResponse response){
         response.setContentType("application/pdf");
 
         try {
-            bankAccountService.generatePdf(response);
+            bankAccountService.generatePdf(id, response);
         }catch (Exception e){
 
         }

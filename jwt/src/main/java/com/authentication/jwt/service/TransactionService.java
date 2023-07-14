@@ -5,10 +5,16 @@ import com.authentication.jwt.models.entities.Transaction;
 import com.authentication.jwt.models.enums.TransactionType;
 import com.authentication.jwt.repository.BankAccountRepository;
 import com.authentication.jwt.repository.TransactionRepository;
+import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.pdf.PdfWriter;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -118,4 +124,39 @@ public class TransactionService {
 //        Optional<Accounts> account = accountService.findById(accID);
 //        return account.get().getTransaction();
 //    }
+
+    public void generateUserListPdf(HttpServletResponse response) throws IOException {
+
+        Document document = new Document(PageSize.A4);
+
+        //create a pdf write to actually edit the document
+        PdfWriter writer = PdfWriter.getInstance(document, response.getOutputStream());
+
+        //open the document for editing
+        document.open();
+
+        Font textFont = FontFactory.getFont(FontFactory.COURIER_BOLD);
+        textFont.setSize(14);
+        textFont.setColor(Color.BLUE);
+
+        Font tableHeaderFont = FontFactory.getFont(FontFactory.TIMES_BOLD);
+        textFont.setSize(16);
+
+
+        //create paragraph text to add to the document
+        Paragraph paragraph = new Paragraph("Hello World. This is a test document", textFont);
+
+        //add paragraph to your document
+        document.add(paragraph);
+
+
+        //close document
+        document.close();
+
+        //close write
+        writer.close();
+
+
+    }
+
 }

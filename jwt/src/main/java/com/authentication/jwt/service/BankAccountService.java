@@ -1,6 +1,7 @@
 package com.authentication.jwt.service;
 
 import com.authentication.jwt.models.entities.BankAccount;
+import com.authentication.jwt.models.entities.Transaction;
 import com.authentication.jwt.models.entities.User;
 import com.authentication.jwt.repository.BankAccountRepository;
 import com.authentication.jwt.repository.UserRepository;
@@ -57,10 +58,15 @@ public class BankAccountService {
     public List<BankAccount> getAllBankAccounts() {
         return bankAccountRepository.findAll();
     }
-    public void generatePdf(HttpServletResponse response) throws IOException {
+    public void generatePdf(Long id, HttpServletResponse response) throws IOException {
 
         //create a pdf document with a a4 size
         Document document = new Document(PageSize.A4);
+
+        BankAccount bankAccount = bankAccountRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("not found"));
+        System.out.println("Bank Account" +bankAccount);
+        List<Transaction> transaction =  bankAccount.getTransactions();
+        System.out.println("transaction" +transaction);
 
         //create a pdf write to actually edit the document
         PdfWriter writer = PdfWriter.getInstance(document, response.getOutputStream());
@@ -69,7 +75,7 @@ public class BankAccountService {
         document.open();
 
         //create paragraph text to add to the document
-        Paragraph paragraph = new Paragraph("Hello World. this is test document");
+        Paragraph paragraph = new Paragraph("Transaction List");
 
         //add paragraph
         document.add(paragraph);
@@ -83,13 +89,20 @@ public class BankAccountService {
         //create a cell in the table
         PdfPCell headerCell = new PdfPCell();
 
-        headerCell.setPhrase(new Phrase("Account Number"));
+        headerCell.setPhrase(new Phrase("Amount"));
 
         table.addCell(headerCell);
 
-        headerCell.setPhrase(new Phrase("Account Balance"));
+        headerCell.setPhrase(new Phrase("Type"));
 
         table.addCell(headerCell);
+
+        for (Transaction transaction1: transaction){
+            table.addCell(String.valueOf(transaction1.getAmount()));
+            table.addCell(String.valueOf(transaction1.getType()));
+        }
+
+
 
         document.add(table);
 
