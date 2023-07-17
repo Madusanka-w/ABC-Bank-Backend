@@ -54,6 +54,12 @@ public class UserService {
         return "User with ID : " + id + " deleted";
     }
 
+    public User updatePassword(String email, String password){
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        user.setPassword(passwordEncoder.encode(password));
+        return userRepository.save(user);
+    }
+
     public User updateUser(Long id, User user){
         User user1 = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
 

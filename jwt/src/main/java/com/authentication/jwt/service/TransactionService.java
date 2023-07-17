@@ -8,6 +8,7 @@ import com.authentication.jwt.repository.TransactionRepository;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfWriter;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -48,12 +48,12 @@ public class TransactionService {
     }
 
 
-    public BankAccount withdrawAmount(long accID, long amount){
+    public String withdrawAmount(long accID, long amount){
         BankAccount account = bankAccountService.findsById(accID);
         Transaction transaction = new Transaction();
 
         if(amount>account.getAccountBalance()){
-            return new BankAccount();
+            return "Not enough balance";
         }
         else {
             account.setAccountBalance(account.getAccountBalance() - amount);
@@ -65,9 +65,16 @@ public class TransactionService {
             transactionList.add(transaction);
             account.setTransactions(transactionList);
             transactionRepository.save(transaction);
-            return bankAccountRepository.save(account);
+            bankAccountRepository.save(account);
+            return "Success";
         }
 
+    }
+
+    public String deleteTransaction(Long transactionId){
+        Transaction transaction = transactionRepository.findById(transactionId).orElseThrow(()-> new EntityNotFoundException("Transaction NOt Found"));
+        transactionRepository.delete(transaction);
+        return "Transaction ID : " + transactionId + " deleted.";
     }
 
 //    public String transferAmount(Transaction transaction){

@@ -49,6 +49,15 @@ public class UserController {
 
     }
 
+    @PatchMapping("/updatePassword/{email}/{password}")
+    public User updatePassword(@PathVariable String email, @PathVariable String password){
+        try {
+            return userService.updatePassword(email, password);
+        }catch (Exception e){
+            return new User();
+        }
+    }
+
     @PutMapping("/update/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User user) {
         try {

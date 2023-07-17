@@ -58,6 +58,8 @@ public class BankAccountService {
     public List<BankAccount> getAllBankAccounts() {
         return bankAccountRepository.findAll();
     }
+
+
     public void generatePdf(Long id, HttpServletResponse response) throws IOException {
 
         //create a pdf document with a a4 size

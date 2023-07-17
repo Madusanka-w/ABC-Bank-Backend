@@ -23,7 +23,7 @@ public class TransactionController {
     }
 
     @PostMapping("/withdrawal/{amount}/{id}")
-    public BankAccount withdrawal(@PathVariable long id, @PathVariable long amount){
+    public String withdrawal(@PathVariable long id, @PathVariable long amount){
         return transactionService.withdrawAmount(id, amount);
     }
 
@@ -36,6 +36,15 @@ public class TransactionController {
         }
         catch (Exception e){
             System.out.println(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/deleteTransaction/{id}")
+    public String deleteTransaction(@PathVariable Long id){
+        try {
+            return transactionService.deleteTransaction(id);
+        }catch (Exception e){
+            return e.getMessage();
         }
     }
 
